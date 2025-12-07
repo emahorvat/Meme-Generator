@@ -20,10 +20,20 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 def dovoljeni_formati(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def dovoljeni_formati(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def get_font(size=40):
     font_paths = [
+        # windows poti
         'C:/Windows/Fonts/impact.ttf',
         'C:/Windows/Fonts/Arial.ttf',
+        'C:/Windows/Fonts/arial.ttf',
+        # linux poti
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+        '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+        '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
     ]
     
     for font_path in font_paths:
@@ -33,7 +43,6 @@ def get_font(size=40):
             continue
     
     return ImageFont.load_default()
-
 def wrap_text(text, font, max_width, draw):
     words = text.split(' ')
     lines = []
