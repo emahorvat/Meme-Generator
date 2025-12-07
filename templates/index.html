@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Meme Generator</h1>
+        </header>
+
+        <div class="card">
+            <h2>Naloži sliko in dodaj tekst</h2>
+            <form action="/generate" method="POST" enctype="multipart/form-data" id="memeForm">
+                
+                <!-- upload slike -->
+                <div class="form-group">
+                    <label for="image">Izberi sliko:</label>
+                    <input type="file" 
+                           id="image" 
+                           name="image" 
+                           accept="image/png,image/jpeg,image/jpg,image/gif"
+                           required>
+                    <small>Dovoljeni formati: PNG, JPG, JPEG, GIF</small>
+                </div>
+
+                <div id="imagePreview" class="image-preview"></div>
+
+                <div class="form-group">
+                    <label for="top_text">Zgornji tekst:</label>
+                    <input type="text" 
+                           id="top_text" 
+                           name="top_text"
+                                maxlength="50">
+                           
+                </div>
+
+                <div class="form-group">
+                    <label for="bottom_text">Spodnji tekst:</label>
+                    <input type="text" 
+                           id="bottom_text" 
+                           name="bottom_text" 
+                                maxlength="50">
+                    
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Generiraj Meme
+                </button>
+            </form>
+        </div>
+
+        {% if meme_image %}
+        <div class="card result-card">
+            <h2>Generiran meme</h2>
+            <div class="meme-result">
+                <img src="{{ url_for('generated_file', filename=meme_image) }}" 
+                     alt="Generated Meme"
+                     class="meme-image">
+            </div>
+            <div class="action-buttons">
+                <a href="{{ url_for('generated_file', filename=meme_image) }}" 
+                   download="{{ meme_image }}" 
+                   class="btn btn-success">
+                    Prenesi meme
+                </a>
+                <a href="/" class="btn btn-secondary">
+                    Ustvari nov meme
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+    <script>
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('imagePreview');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    imagePreview.innerHTML = `
+
+                        <img src="${event.target.result}" alt="Preview" style="max-width: 100%; max-height: 400px; border-radius: 8px;">
+                    `;
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // validacija
+        const form = document.getElementById('memeForm');
+        form.addEventListener('submit', function(e) {
+            const topText = document.getElementById('top_text').value.trim();
+            const bottomText = document.getElementById('bottom_text').value.trim();
+            
+            if (!topText && !bottomText) {
+                e.preventDefault();
+                alert('vnesi vsaj en tekst');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
